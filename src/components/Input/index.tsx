@@ -2,5 +2,13 @@ import { TextInput, TextInputProps } from "react-native";
 import { styles } from "./styles";
 
 export function Input({ ...rest }: TextInputProps) {
-  return <TextInput style={styles.container} {...rest} />;
+  return (
+    <TextInput
+      style={styles.container}
+      placeholderTextColor="#74798B"
+      cursorColor="#2C46B1"
+      selectionColor="#2C46B1"
+      {...rest}
+    />
+  );
 }
