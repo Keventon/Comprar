@@ -6,13 +6,21 @@ const ITEMS_STORAGE_KEY = "@comprar:items";
 export type ItemStorage = {
   id: string;
   description: string;
+  quantity: number;
   status: FilterStatus;
 };
 
 async function get(): Promise<ItemStorage[]> {
   try {
     const response = await AsyncStorage.getItem(ITEMS_STORAGE_KEY);
-    return response ? JSON.parse(response) : [];
+    const data: Array<ItemStorage & { quantity?: number }> = response
+      ? JSON.parse(response)
+      : [];
+
+    return data.map<ItemStorage>((item) => ({
+      ...item,
+      quantity: item.quantity ?? 1,
+    }));
   } catch (error) {
     throw new Error("GET_ITEMS " + error);
   }

@@ -16,26 +16,38 @@ import { Filter } from "@/components/Filter";
 import { FilterStatus } from "@/types/FilterStatus";
 import { Item } from "@/components/Item";
 import { useEffect, useState } from "react";
-import { itemsStorage } from "@/storage/itemsStorage";
+import { ItemStorage, itemsStorage } from "@/storage/itemsStorage";
 
 const FILTER_STATUS: FilterStatus[] = [FilterStatus.PENDING, FilterStatus.DONE];
 export function Home() {
   const [filter, setFilter] = useState<FilterStatus>(FilterStatus.PENDING);
   const [description, setDescription] = useState("");
-  const [items, setItems] = useState<any>([]);
+  const [quantity, setQuantity] = useState("");
+  const [items, setItems] = useState<ItemStorage[]>([]);
 
   function updateFilter(status: FilterStatus) {
     setFilter(status);
   }
 
   async function handleAdd() {
-    if (description.trim() === "") {
+    const descriptionFormatted = description.trim();
+    const parsedQuantity = Number(quantity);
+
+    if (descriptionFormatted === "") {
       return Alert.alert("Descrição vazia!", "Informe um item para adicionar.");
+    }
+
+    if (!quantity.trim() || Number.isNaN(parsedQuantity) || parsedQuantity <= 0) {
+      return Alert.alert(
+        "Quantidade inválida!",
+        "Informe uma quantidade maior que zero."
+      );
     }
 
     const newItem = {
       id: Math.random().toString(32).substring(2),
-      description,
+      description: descriptionFormatted,
+      quantity: parsedQuantity,
       status: FilterStatus.PENDING,
     };
 
@@ -44,6 +56,7 @@ export function Home() {
 
     setFilter(FilterStatus.PENDING);
     setDescription("");
+    setQuantity("");
   }
 
   async function itemsByStatus() {
@@ -105,6 +118,13 @@ export function Home() {
           placeholder="O que você precisa comprar?"
           onChangeText={setDescription}
           value={description}
+          returnKeyType="next"
+        />
+        <Input
+          placeholder="Qual a quantidade?"
+          onChangeText={setQuantity}
+          keyboardType="number-pad"
+          value={quantity}
           returnKeyType="send"
           onSubmitEditing={handleAdd}
         />
