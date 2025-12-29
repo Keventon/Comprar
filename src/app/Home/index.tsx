@@ -43,7 +43,6 @@ export function Home() {
     await itemsByStatus();
 
     setFilter(FilterStatus.PENDING);
-    Alert.alert("Sucesso", `${description} adicionado!`);
     setDescription("");
   }
 
